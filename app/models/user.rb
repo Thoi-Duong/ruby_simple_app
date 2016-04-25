@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-
+  has_many :microposts, dependent: :destroy
   attr_accessor :remember_token, :activation_token, :reset_token
   before_save   :downcase_email
   before_create :create_activation_digest
@@ -71,6 +71,13 @@ class User < ActiveRecord::Base
   def send_password_reset_email
     UserMailer.password_reset(self).deliver_now
   end
+
+  # Defines a proto-feed.
+  # See "Following users" for the full implementation.
+  def feed
+    microposts
+  end
+
   private
 
     # Converts email to all lower-case.
